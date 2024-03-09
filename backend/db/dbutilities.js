@@ -1,8 +1,13 @@
 // Import the functions you need from the SDKs you need
 
-import { initializeApp } from "firebase/app";
-
-import { getDatabase, ref, set, remove } from "firebase/database";
+//import { initializeApp } from "firebase/app";
+const initializeApp = require('firebase/app');
+const getDatabase = require('firebase/app');
+const ref = require('firebase/app');
+const set = require('firebase/app');
+const get = require('firebase/app');
+const remove = require('firebase/app');
+//import { getDatabase, ref, set, get, remove } from "firebase/database";
 
 // TODO: Add SDKs for Firebase products that you want to use
 
@@ -64,7 +69,23 @@ function deleteRoute(routeId) {
 	remove(ref(db, 'routes/' + routeId));
 }
 
+function getUserSnapshot(username) {
+	return get(ref(db, 'users/' + username));
+}
+
+async function getUserPassword(username) {
+	const query = await getUserSnapshot(username);
+	return query.val().password;
+}
+//console.log(await getUserPassword("alex"));
 //deleteUser("alex");
-deleteRoute("1");
+//deleteRoute("1");
 //writeRouteData(2, "test", "test");
 //writeUserData("alex", "test1234", "alex@gmail.com");
+
+module.exports = {  
+
+	getUserPassword
+
+};
+
