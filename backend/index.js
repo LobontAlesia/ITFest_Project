@@ -14,8 +14,12 @@ app.use(cors());
 app.get('/getPassword', async (req, res) => {
 
     try {
-
-        res.json({"test":"test"});
+				const dbu = new du();
+				const result = params.params(req);
+				const pass = await dbu.getUserPassword(result.username);
+				const username = result.username;
+				console.log(pass);
+        res.json({username:pass});
     } catch(err) {
         console.error('Error:', err.message);
         res.status(500).json({ err: 'Failed to fetch password' });
