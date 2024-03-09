@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Mo
 import AddressInputPage from './AddressInputPage';
 import MapPage from './MapPage';
 
-const App = () => {
+const App =  () => {
   return (
     <Router>
       <Routes> {/* Înlocuirea componente Switch */}
