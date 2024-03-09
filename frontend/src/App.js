@@ -1,51 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import MapComponent from './MapComponent';
 
-const MapComponent = () => {
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
+const App = () => {
+  const [loadMap, setLoadMap] = useState(false);
+  const [coordinates, setCoordinates] = useState([]);
 
   useEffect(() => {
-    async function fetchRoute() {
+    const fetchCoordinates = async () => {
       try {
         const response = await fetch('http://localhost:3000/get-route');
         const data = await response.json();
-        setRouteCoordinates(data);
+        setCoordinates(data);
+        setLoadMap(true);
       } catch (error) {
-        console.error('Error fetching route:', error);
+        console.error('Error fetching coordinates:', error);
       }
-    }
+    };
 
-    fetchRoute();
+    fetchCoordinates();
   }, []);
 
-  // Definiți opțiunile hărții
-  const mapOptions = {
-    zoom: 15,
-    center: { lat: 45.7494, lng: 21.2272 } // Poziția Timișoarei
-  };
-
   return (
-    <div>
-      <h2>Hartă</h2>
-      <GoogleMap
-        mapContainerStyle={{ height: '400px', width: '100%' }}
-        zoom={mapOptions.zoom}
-        center={mapOptions.center}
-      >
-        {/* Afișați markerul pentru fiecare coordonată din ruta obținută */}
-        {routeCoordinates.map((coordinate, index) => (
-          <Marker key={index} position={{ lat: coordinate[0], lng: coordinate[1] }} />
-        ))}
-      </GoogleMap>
-
-      <h2>Coordonatele rutei:</h2>
-      <ul>
-        {routeCoordinates.map((coordinate, index) => (
-          <li key={index}>Latitudine: {coordinate[0]}, Longitudine: {coordinate[1]}</li>
-        ))}
-      </ul>
+    <div className="App">
+      <h4>Desenează o linie între două puncte pe Google Maps în React</h4>
+      {!loadMap ? <div>Încărcare...</div> : <MapComponent coordinates={coordinates} />}
+      <br />
+      <small><b>Notă:</b> Pentru a face acest lucru să funcționeze, trebuie să setați cheia API Google Maps în fișierul App.js.</small>
     </div>
   );
-};
+}
 
-export default MapComponent;
+export default App;

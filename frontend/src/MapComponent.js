@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, Polyline } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 
 const MapComponent = () => {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -19,8 +19,16 @@ const MapComponent = () => {
     fetchRoute();
   }, []);
 
-  // Convertă coordonatele rutei în formatul necesar pentru Polyline
-  const path = routeCoordinates.map(coordinate => ({ lat: coordinate[0], lng: coordinate[1] }));
+  // Funcție pentru tratarea răspunsului de la DirectionsService
+  const directionsCallback = (response) => {
+    if (response !== null) {
+      if (response.status === 'OK') {
+        setDirections(response);
+      } else {
+        console.log('Directions request failed:', response.status);
+      }
+    }
+  };
 
   return (
     <div>
@@ -33,13 +41,16 @@ const MapComponent = () => {
         >
           {routeCoordinates.length > 0 && (
             <>
-              <Polyline
-                path={path}
+              <Marker position={{ lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] }} />
+              <Marker position={{ lat: routeCoordinates[routeCoordinates.length - 1][0], lng: routeCoordinates[routeCoordinates.length - 1][1] }} />
+              {directions && <DirectionsRenderer directions={directions} />}
+              <DirectionsService
                 options={{
-                  strokeColor: '#FF0000',
-                  strokeOpacity: 1,
-                  strokeWeig,
+                  origin: { lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] },
+                  destination: { lat: routeCoordinates[routeCoordinates.length - 1][0], lng: routeCoordinates[routeCoordinates.length - 1][1] },
+                  travelMode: 'DRIVING',
                 }}
+                callback={directionsCallback}
               />
             </>
           )}
