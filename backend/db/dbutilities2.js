@@ -41,10 +41,11 @@ module.exports = class dbutilities {
 		this.db = fbdb.getDatabase(this.app);
 	}
 
-	writeUserData(username, password, email) {
+	writeUserData(username, password, email, privilege) {
   	fbdb.set(fbdb.ref(this.db, 'users/' + username), {
     	email: email,
-			password: password
+			password: password,
+			privilege: privilege
   	});
 	}
 

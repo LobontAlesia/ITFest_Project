@@ -7,19 +7,36 @@ const du = require('./db/dbutilities2.js');
 
 const app = express();
 const port = 3000;
+const dbu = new du();
 
 // Enable CORS for all routes
 app.use(cors());
 
+
+app.get('/signUserUp', async(req, res) => {
+	try {
+		const result = params.params(req);
+		const username = result.username;
+		const password = result.password;
+		const email = result.email;
+		const privilege = result.privilege;
+		dbu.writeUserData(username, password, email, privilege);
+		console.log('test');
+		res.json({'ignore':'ignore'});
+	} catch(err) {
+		console.error(err);
+		res.status(500).json({err: 'Failed to sign user up'});
+	}
+});
+
 app.get('/getPassword', async (req, res) => {
 
     try {
-				const dbu = new du();
 				const result = params.params(req);
 				const pass = await dbu.getUserPassword(result.username);
 				const username = result.username;
 				console.log(pass);
-        res.json({username:pass});
+        res.json({password:pass});
     } catch(err) {
         console.error('Error:', err.message);
         res.status(500).json({ err: 'Failed to fetch password' });
