@@ -2,6 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const polyline = require('@mapbox/polyline');
 const cors = require('cors'); // Import the cors middleware
+var params = require('./JSONParser/parse.js');
+const du = require('./db/dbutilities2.js');
 
 const app = express();
 const port = 3000;
@@ -9,9 +11,22 @@ const port = 3000;
 // Enable CORS for all routes
 app.use(cors());
 
+app.get('/getPassword', async (req, res) => {
+
+    try {
+
+        res.json({"test":"test"});
+    } catch(err) {
+        console.error('Error:', err.message);
+        res.status(500).json({ err: 'Failed to fetch password' });
+    }
+
+});
+
 // Define a route to handle incoming POST requests
 app.get('/get-route', async (req, res) => {
     try {
+        
         // Define the request body and headers
         const requestBody = {
                 "origin": {
@@ -69,4 +84,5 @@ app.get('/get-route', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
 

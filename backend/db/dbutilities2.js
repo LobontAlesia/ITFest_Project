@@ -74,7 +74,7 @@ module.exports = class dbutilities {
 			const pass = snapshot.val().password;
 			return pass;
 		} catch(err) {
-			return "58utu58u8u88u88dg9dujns9fsjdj9sja9j";
+			return {"58utu58u8u88u88dg9dujns9fsjdj9sja9j":"asdasd"};
 		}
 	}
 	

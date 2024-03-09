@@ -1,9 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 
+const test = () => {
+    const response1 = fetch('http:/localhost:8080/?mode=getPassword&username=alex');
+    //console.log(response1);
+    return response1;
+
+}
+
 const MapComponent = () => {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [directions, setDirections] = useState(null);
+
+  const [response1, setResponse1] = useState(null); // [1
+  const [loading, setLoading] = useState(false); // [2
+  const [error, setError] = useState(false);
+
+
+  //const response1 = await fetch('http:/localhost:8080/?mode=getPassword&username=alex');
+  //console.log(response1);
 
   useEffect(() => {
     async function fetchRoute() {
@@ -20,6 +35,30 @@ const MapComponent = () => {
     fetchRoute();
   }, []);
 
+  async function fetchPassword() {
+    try {
+        setLoading(true);
+        setError(false);
+        const res = await fetch('http://localhost:3000/getPassword');
+        const data = await res.text();
+        console.log(data);
+        setResponse1(data);
+        setLoading(false);
+        setError(false);
+    } catch(err) {
+        setLoading(false);
+        setError(true);
+        console.error(err);
+    }
+
+  }
+
+  useEffect( ()=>{
+    fetchPassword();
+  },[]);
+
+  useEffect(() => {console.log({loading, error, response1});}, [loading, error, response1])
+
   // Funcție pentru tratarea răspunsului de la DirectionsService
   const directionsCallback = (response) => {
     if (response !== null) {
@@ -31,6 +70,10 @@ const MapComponent = () => {
       }
     }
   };
+
+  if(loading) return <p>Loading...</p>; // [3
+
+  if(error) return <p>No data found</p>; // [4
 
   return (
     <div>
@@ -61,8 +104,9 @@ const MapComponent = () => {
 
       <h2>Coordonatele rutei:</h2>
       <ul>
+        <li key={1}>{response1}</li> 
         {routeCoordinates.map((coordinate, index) => (
-          <li key={index}>Latitudine: {coordinate[0]}, Longitudine: {coordinate[1]}</li>
+          <li key={index+1}>Latitudine: {coordinate[0]}, Longitudine: {coordinate[1]}</li>
         ))}
       </ul>
     </div>
