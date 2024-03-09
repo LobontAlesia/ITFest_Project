@@ -1,0 +1,19 @@
+{
+  "routes": [
+    null,
+    {
+      "emtype": "test",
+      "route": "test"
+    },
+    {
+      "emtype": "test",
+      "route": "test"
+    }
+  ],
+  "users": {
+    "alex": {
+      "email": "alex@gmail.com",
+      "password": "test1234"
+    }
+  }
+}
