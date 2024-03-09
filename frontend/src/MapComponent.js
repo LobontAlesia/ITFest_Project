@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, Polyline } from '@react-google-maps/api';
+import { GoogleMap, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 
 const MapComponent = () => {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -10,6 +10,7 @@ const MapComponent = () => {
       try {
         const response = await fetch('http://localhost:3000/get-route');
         const data = await response.json();
+        console.log('Route coordinates:', data);
         setRouteCoordinates(data);
       } catch (error) {
         console.error('Error fetching route:', error);
@@ -19,8 +20,17 @@ const MapComponent = () => {
     fetchRoute();
   }, []);
 
-  // Convertă coordonatele rutei în formatul necesar pentru Polyline
-  const path = routeCoordinates.map(coordinate => ({ lat: coordinate[0], lng: coordinate[1] }));
+  // Funcție pentru tratarea răspunsului de la DirectionsService
+  const directionsCallback = (response) => {
+    if (response !== null) {
+      if (response.status === 'OK' && directions === null) {
+        console.log('Directions request successful!',);        
+        setDirections(response);
+      } else {
+        console.log('Directions request failed:', response.status);
+      }
+    }
+  };
 
   return (
     <div>
@@ -29,17 +39,20 @@ const MapComponent = () => {
         <GoogleMap
           mapContainerStyle={{ height: '100%', width: '100%' }}
           zoom={15}
-          center={routeCoordinates.length > 0 ? { lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] } : { lat: 45.7494, lng: 21.2272 }}
+        center={{ lat: 45.7494, lng: 21.2272 }}
         >
           {routeCoordinates.length > 0 && (
             <>
-              <Polyline
-                path={path}
+              <Marker position={{ lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] }} />
+              <Marker position={{ lat: routeCoordinates[routeCoordinates.length - 1][0], lng: routeCoordinates[routeCoordinates.length - 1][1] }} />
+              {directions && <DirectionsRenderer directions={directions} />}
+              <DirectionsService
                 options={{
-                  strokeColor: '#FF0000',
-                  strokeOpacity: 1,
-                  strokeWeig,
+                  origin: { lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] },
+                  destination: { lat: routeCoordinates[routeCoordinates.length - 1][0], lng: routeCoordinates[routeCoordinates.length - 1][1] },
+                  travelMode: 'DRIVING',
                 }}
+                callback={directionsCallback}
               />
             </>
           )}

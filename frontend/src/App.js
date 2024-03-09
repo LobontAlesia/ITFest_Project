@@ -1,51 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+// App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Modificarea importului
 
-const MapComponent = () => {
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
+import AddressInputPage from './AddressInputPage';
+import MapPage from './MapPage';
 
-  useEffect(() => {
-    async function fetchRoute() {
-      try {
-        const response = await fetch('http://localhost:3000/get-route');
-        const data = await response.json();
-        setRouteCoordinates(data);
-      } catch (error) {
-        console.error('Error fetching route:', error);
-      }
-    }
-
-    fetchRoute();
-  }, []);
-
-  // Definiți opțiunile hărții
-  const mapOptions = {
-    zoom: 15,
-    center: { lat: 45.7494, lng: 21.2272 } // Poziția Timișoarei
-  };
-
+const App = () => {
   return (
-    <div>
-      <h2>Hartă</h2>
-      <GoogleMap
-        mapContainerStyle={{ height: '400px', width: '100%' }}
-        zoom={mapOptions.zoom}
-        center={mapOptions.center}
-      >
-        {/* Afișați markerul pentru fiecare coordonată din ruta obținută */}
-        {routeCoordinates.map((coordinate, index) => (
-          <Marker key={index} position={{ lat: coordinate[0], lng: coordinate[1] }} />
-        ))}
-      </GoogleMap>
-
-      <h2>Coordonatele rutei:</h2>
-      <ul>
-        {routeCoordinates.map((coordinate, index) => (
-          <li key={index}>Latitudine: {coordinate[0]}, Longitudine: {coordinate[1]}</li>
-        ))}
-      </ul>
-    </div>
+    <Router>
+      <Routes> {/* Înlocuirea componente Switch */}
+        <Route path="/" element={<AddressInputPage />} /> {/* Înlocuirea atributului 'component' cu 'element' */}
+        <Route path="/map" element={<MapPage />} /> {/* Înlocuirea atributului 'component' cu 'element' */}
+      </Routes>
+    </Router>
   );
 };
 
-export default MapComponent;
+export default App;
