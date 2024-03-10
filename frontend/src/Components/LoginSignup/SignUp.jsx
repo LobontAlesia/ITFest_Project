@@ -7,19 +7,13 @@ import password_icon from '../../Assets/password.png'
 import punct_icon from '../../Assets/punct.png'
 import ambulance_icon from '../../Assets/ambulance.png'
 import { useNavigate } from 'react-router-dom';
-const LoginSignup = () => {
+const SignUp = () => {
     
-    const [action,setAction] = useState("Login");
+    const [action,setAction] = useState("SignUp");
     const navigate = useNavigate()
 
-    const handleLogin = useCallback((username, password) => {
-
-        navigate('/map')  
-    })
-
-    const handleSignUp = useCallback(() => {
-
-        navigate('/SignUp')  
+    const handleLogin = useCallback(() => {
+        navigate('/')  
     })
 
 
@@ -37,8 +31,8 @@ const LoginSignup = () => {
         </div>
         <div className="inputs">
             {action==="Login"?<div></div>: <div className="input">
-                <img src={user_icon} alt="" />
-                <input type="text" placeholder='Name'/>
+                <img src={email_icon} alt="" />
+                <input type="email" id="email" placeholder='E-mail'/>
             </div>}
            
             <div className="input">
@@ -52,13 +46,14 @@ const LoginSignup = () => {
         </div>
         {action==="Sign Up"?<div></div>: <div className="forgot-password">Lost Password? <span>Click here!</span></div>}
         <div className="submit-container">
-            <button className={action==="Login"?"submit gray":"submit"} onClick={() => { handleSignUp();}}>Sign Up</button>
+            <button className={action==="Login"?"submit gray":"submit"} onClick={async ()=>{
+                const username = document.getElementById('user').value;
+                const password = document.getElementById('pass').value; 
+                const email = document.getElementById('email').value;
+                const result = await fetch('http://localhost:3000/signUserUp?username='+username+'&password='+password+'&email='+email+'&privilege=US');
+                handleLogin();
+            }}>Sign Up</button>
             <button className={action==="Sign Up"? "submit gray":"submit"} onClick={async () => {
-                    const password = document.getElementById('pass').value;
-                    const username = document.getElementById('user').value;
-                    const result = await fetch(`http://localhost:3000/getPassword?username=${username}`);
-                    const data = await result.json();
-                    if(data.password === password)
                         handleLogin();
                 }}>Login</button>
         </div>
@@ -66,4 +61,4 @@ const LoginSignup = () => {
   )
 }
 
-export default LoginSignup
+export default SignUp
