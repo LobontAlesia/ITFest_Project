@@ -14,10 +14,13 @@ const MapPageAmbulance = () => {
     const [startCoordinates, setStartCoordinates] = useState(null);
     const [endCoordinates, setEndCoordinates] = useState(null);
   
-    const handleSendCoordinates = () => {
+    const handleSendCoordinates = async () => {
       const startCoordsArray = [parseFloat(startLat), parseFloat(startLng)];
       const endCoordsArray = [parseFloat(endLat), parseFloat(endLng)];
-  
+
+
+      const response = await fetch('http://localhost:3000/saveRoute?startLat=' + startCoordsArray[0] + '&startLong=' + startCoordsArray[1] + '&endLat=' + endCoordsArray[0] + '&endLong=' + endCoordsArray[1]);
+
       if (!isNaN(startCoordsArray[0]) && !isNaN(startCoordsArray[1]) &&
           !isNaN(endCoordsArray[0]) && !isNaN(endCoordsArray[1])) {
         setStartCoordinates({ lat: startCoordsArray[0], lng: startCoordsArray[1] });
