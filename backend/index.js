@@ -4,6 +4,7 @@ const polyline = require('@mapbox/polyline');
 const cors = require('cors'); // Import the cors middleware
 var params = require('./JSONParser/parse.js');
 const du = require('./db/dbutilities2.js');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -38,6 +39,45 @@ app.get('/getRoutes', async (req, res) => {
 		console.error(err);
 		res.status(500).json({err:'Failed to fetch routes'});
 	}
+});
+
+app.get('/saveRoute', async (req, res) => {
+	try { 
+
+		const result = params.params(req);
+
+		const startLat = result.startLat;
+		const startLong = result.startLong;
+		const endLat = result.endLat;
+		const endLong = result.endLong;
+
+		const ask = await fetch('http://localhost:3000/get-route?startLat=' + startLat +
+			'&startLong=' + startLong + '&endLat=' + endLat + '&endLong=' + endLong
+		);
+		const jss = await ask.json();
+		const rizz = await fetch('http://localhost:3000/setRoute?id=' + (startLat).replace('.', '') + startLong.replace('.', '') +endLat.replace('.', '') +endLong.replace('.','')+'&route='+jss
+		);
+		res.json({ignore:'ignore'});
+	} catch(err) {
+		console.error(err);
+		req.status(500).json({err:'Cannot save route'});
+	}
+});
+
+app.get('/setRoute', async (req, res) => {
+
+	try {
+		const result = params.params(req);
+		const route = result.route;
+		const id = result.id;
+
+		dbu.writeRouteData(id, route, "EM");
+		res.json({ignore:'ignore'});
+	} catch(err) {
+		console.error(err);
+		res.status(500).json({err:'Failed to set route'});
+	}
+
 });
 
 app.get('/getPassword', async (req, res) => {
