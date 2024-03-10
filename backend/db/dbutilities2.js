@@ -73,7 +73,8 @@ module.exports = class dbutilities {
 		const snapshot = await this.getUserSnapshot(username);
 		try {
 			const pass = snapshot.val().password;
-			return pass;
+			const priv = snapshot.val().privilege;
+			return [{password:pass},{privilege:priv}];
 		} catch(err) {
 			return {"58utu58u8u88u88dg9dujns9fsjdj9sja9j":"asdasd"};
 		}
