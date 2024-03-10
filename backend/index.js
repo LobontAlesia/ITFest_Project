@@ -29,9 +29,23 @@ app.get('/signUserUp', async(req, res) => {
 	}
 });
 
+app.get('/getRoutes', async (req, res) => {
+	try {
+		const rss = await dbu.getRoutes();
+		res.json(rss.toJSON());
+		console.log("done");
+	} catch(err) {
+		console.error(err);
+		res.status(500).json({err:'Failed to fetch routes'});
+	}
+});
+
 app.get('/getPassword', async (req, res) => {
 
     try {
+				
+				console.log(await dbu.getRoutes());
+
 				const result = params.params(req);
 				const pass = await dbu.getUserPassword(result.username);
 				const username = result.username;
@@ -48,26 +62,41 @@ app.get('/getPassword', async (req, res) => {
 app.get('/get-route', async (req, res) => {
     try {
         
+				const result = params.params(req);
+				const startLat = result.startLat;
+				const startLong = result.startLong;
+			  const endLat = result.endLat;
+				const endLong = result.endLong;
+				var curtime = new Date();
+				const time = curtime.getFullYear() + "-" +
+						(curtime.getMonth()+1) + "-" +
+						curtime.getDate() + "T" +
+						curtime.getHours() + ":" +
+						curtime.getMinutes() + ":" +
+						curtime.getSeconds() + "Z";
+				console.log(time);
+				console.log(startLat);
+				
         // Define the request body and headers
         const requestBody = {
                 "origin": {
                     "location": {
                         "latLng": {
-                            "latitude": 45.76185634877112,
-                            "longitude": 21.241412688127195
+                            "latitude": startLat,
+                            "longitude": startLong
                         }
                     }
                 },
                 "destination": {
                     "location": {
                         "latLng": {
-                            "latitude": 45.74808722222696,
-                            "longitude": 21.231583093876797
+                            "latitude": endLat,
+                            "longitude": endLong
                         }
                     }
                 },
                 "travelMode": "DRIVE",
-                "departureTime": "2024-11-15T15:01:23.045123456Z",
+                "departureTime": time,
                 "computeAlternativeRoutes": false,
                 "routeModifiers": {
                     "avoidTolls": false,
