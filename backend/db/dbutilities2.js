@@ -79,6 +79,21 @@ module.exports = class dbutilities {
 		}
 	}
 	
+	getRoutesSnapshot() {
+		return get(ref(this.db, 'routes/'));
+	}
+
+	async getRoutes() {
+		const snapshot = await this.getRoutesSnapshot();
+		try {
+			//const jss = snapshot.json();
+			//console.log(jss);
+			return snapshot;
+		} catch(err) {
+			return {"asdffsfssdgsgsdgs":"sdfgsdgsgsdfg"};
+		}
+	}
+
 }
 
 
